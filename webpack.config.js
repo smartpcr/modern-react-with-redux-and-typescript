@@ -4,6 +4,8 @@ let build = require("@microsoft/web-library-build");
 let buildConfig = build.getConfig();
 let webpackTaskResource = build.webpack.resources;
 let webpack = webpackTaskResource.webpack;
+// var ExtractTextPlugin = require("extract-text-webpack-plugin");
+// var extractCSS = new ExtractTextPlugin("main.css");
 const path = require("path");
 const enlistment = path.join(__dirname, "/node_modules/");
 const replace = new webpack.NormalModuleReplacementPlugin(/VSS\/LoaderPlugins.*/, function (resource) {
@@ -30,7 +32,6 @@ function createConfig(isProduction) {
             path: path.join(__dirname, buildConfig.distFolder),
             publicPath: "/dist/",
             filename: `[name]${minFileNamePart}.js`,
-            libraryTarget: "amd"
         },
 
         devtool: isProduction ? "" : "source-map",
@@ -68,11 +69,23 @@ function createConfig(isProduction) {
                     test: /\.css?/,
                     loader: 'css-loader'
                 },
+                // {
+                //     test: /\.scss$/,
+                //     loader: extractCSS.extract({
+                //         use: ["css-loader", "sass-loader"]
+                //     })
+                // },
                 {
                     test: /\.tsx?$/,
                     exclude: /node_modules/,
                     loaders: ['babel-loader', 'awesome-typescript-loader'],
                 },
+                // {
+                //     test: /\.tsx?$/,
+                //     include: /src/,
+                //     loader: "ts-loader",
+                //     options: { silent: true, transpileOnly: true }
+                // },
                 {
                     test: /\.(png|jpg|gif)$/,
                     use: [

@@ -17,7 +17,7 @@ build.sass.setConfig({ sassMatch: [ 'src/**/*.scss' ], dropCssFiles: true });
 build.text.setConfig({ textMatch: ['src/**/*.Example.tsx', '../**/*.Props.d.ts', '../**/*.Props.ts', '../Utilities/**/*.ts'] });
 
 build.task('build', serial(
-    build.text,
+    //build.text,
     build.sass,
     build.typescript,
     build.webpack
