@@ -1,0 +1,53 @@
+{
+    "manifestVersion": 1,
+    "version": "0.1.1",
+    "name": "Team Service Web Development (test)",
+    "description": "",
+    "publisher": "ms-vsts-demo",
+    "id": "vsts-web-demo",
+
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],
+    "files": [
+        {
+            "path": "dist",
+            "addressable": true
+        },
+        {
+            "path": "images",
+            "addressable": false
+        },
+        {
+            "path": "index.html",
+            "addressable": true
+        },
+        {
+            "path": "node_modules/vss-web-extension-sdk/lib",
+            "addressable": true,
+            "packagePath": "dist/vss-web-extension-sdk"
+        },
+        {
+            "path": "lib/index.css",
+            "addressable": true,
+            "packagePath": "dist/index.css"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "vsts-web-development-hub",
+            "type": "ms.vss-web.hub",
+            "description": "Examples / Guidance for Team Service web developers.",
+            "targets": [
+                "ms.vss-tfs-web.engineering-hub-group"
+            ],
+            "properties": {
+                "name": "Web Development",
+                "order": 2,
+                "uri": "index.html"
+            }
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+**/node_modules
+.DT_Store
+.idea
+package-lock.json
+yarn.lock
+src/**/*.js
+src/**/*.js.map
+src/**/*.scss
+dist
+bin
+lib
+*.vsix

@@ -1,0 +1,50 @@
+/* https://www.typescriptlang.org/docs/handbook/compiler-options.html */
+{
+    "compilerOptions": {
+        /* module */
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "baseUrl": "./",
+        /* lib */
+        "noLib": false,
+        "lib": ["es2017", "dom"],
+        "typeRoots": ["./node_modules/@types"],
+        /* emit */
+        "declaration": false,
+        "jsx": "react",
+        "sourceMap": true,
+        "importHelpers": true,
+        "experimentalDecorators": true,
+        /* checks */
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitAny": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": false,
+        "noImplicitThis": true,
+        "alwaysStrict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "skipLibCheck": true,
+        "plugins": [
+            {
+                "name": "tslint-language-service",
+                "configFile": "./tslint.json",
+                "alwaysShowRuleFailuresAsWarnings": false,
+                "ignoreDefinitionFiles": true,
+                "disableNoUnusedVariableRule": false,
+                "supressWhileTypeErrorsPresent": true,
+                "mockTypeScriptVersion": false
+            }
+        ],
+        "paths": {
+            "OfficeFabric/*": ["node_modules/office-ui-fabric-react/lib-amd/*"],
+            "react": ["node_modules/@types/react"]
+        }
+    },
+    "exclude": ["node_modules", "dist", "lib", "lib-amd"],
+    "include": ["src/**/*"]
+}

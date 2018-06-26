@@ -4,86 +4,107 @@ let build = require("@microsoft/web-library-build");
 let buildConfig = build.getConfig();
 let webpackTaskResource = build.webpack.resources;
 let webpack = webpackTaskResource.webpack;
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var extractCSS = new ExtractTextPlugin("main.css");
+const path = require("path");
+const enlistment = path.join(__dirname, "/node_modules/");
+const replace = new webpack.NormalModuleReplacementPlugin(/VSS\/LoaderPlugins.*/, function (resource) {
+    resource.request = "vssui-css";
+});
 
-const isProduction = process.argv.indexOf("--production") >= 0;
-const rootFolder = path.join(__dirname, "/node_modules/");
+const IS_PRODUCTION = process.argv.indexOf("--production") >= 0;
+const BUNDLE_NAME = "bundle";
 
-const webpackConfig = [
-    createConfig(isProduction)
+let configs = [
+    createConfig(IS_PRODUCTION)
 ];
 
 function createConfig(isProduction) {
-    const bundleName = "bundle";
-    const minFileNamePart = isProduction ? ".min" : "";
-    const config = {
+    let minFileNamePart = isProduction ? ".min" : "";
+    let webpackConfig = {
+        context: path.join(__dirname, buildConfig.libFolder),
+
         entry: {
-            [bundleName]: "src/index"
+            [BUNDLE_NAME]: "./index.js"
         },
+
         output: {
+            path: path.join(__dirname, buildConfig.distFolder),
+            publicPath: "/dist/",
             filename: `[name]${minFileNamePart}.js`,
-            path: path.resolve(__dirname, "dist"),
-            publicPath: "/dist/"
+            libraryTarget: "amd"
         },
+
         devtool: isProduction ? "" : "source-map",
+
         devServer: {
             stats: "none"
         },
 
+        resolve: {
+            extensions: [
+                ".js",
+                ".json",
+                ".jsx",
+                ".ts",
+                ".tsx",
+                ".md"
+            ],
+            alias: {
+                'react': path.join(enlistment, 'react'),
+                'react-dom': path.join(enlistment, 'react-dom'),
+                'tslib': path.join(enlistment, 'tslib'),
+                'OfficeFabric': path.join(enlistment, 'office-ui-fabric-react/lib-amd')
+            }
+        },
+        plugins: [
+            replace
+        ],
         module: {
             rules: [
                 {
-                    test: /\.scss$/,
-                    loader: extractCSS.extract({
-                        use: ["css-loader", "sass-loader"]
-                    })
+                    test: /\.css?/,
+                    loader: 'style-loader'
                 },
                 {
-                    test: /\.(png|jpg|jpeg|gif|svg)$/,
-                    loader: "url-loader",
-                    options: { limit: 25000 }
+                    test: /\.css?/,
+                    loader: 'css-loader'
                 },
                 {
                     test: /\.tsx?$/,
                     exclude: /node_modules/,
-                    loaders: ["babel-loader", "awesome-typescript-loader"]
+                    loaders: ['babel-loader', 'awesome-typescript-loader'],
+                },
+                {
+                    test: /\.(png|jpg|gif)$/,
+                    use: [
+                        {
+                            loader: 'file-loader',
+                            options: {}
+                        }
+                    ]
                 }
             ]
-        },
-        plugins: [extractCSS],
-        resolve: {
-            extensions: [".js", ".json", ".jsx", ".ts", ".tsx", ".md"],
-            alias: {
-                react: path.join(rootFolder, "react"),
-                "react-dom": path.join(rootFolder, "react-dom"),
-                tslib: path.join(rootFolder, "tslib"),
-                OfficeFabric: path.join(rootFolder, "office-ui-fabric-react/lib-amd")
-            }
         }
     };
 
     if (isProduction) {
-        confg.plugins.push(
-            new webpack.optimize.UglifyJsPlugin({
-                minimize: true,
-                compress: {
-                    warnings: false,
-                    screw_ie8: true,
-                    conditionals: true,
-                    unused: true,
-                    comparisons: true,
-                    sequences: true,
-                    dead_code: true,
-                    evaluate: true,
-                    if_return: true,
-                    join_vars: true
-                }
-            })
-        );
+        webpackConfig.plugins.push(new webpack.optimize.UglifyJsPlugin({
+            minimize: true,
+            compress: {
+                warnings: false,
+                screw_ie8: true,
+                conditionals: true,
+                unused: true,
+                comparisons: true,
+                sequences: true,
+                dead_code: true,
+                evaluate: true,
+                if_return: true,
+                join_vars: true
+            }
+        }));
     }
 
-    return config;
+    return webpackConfig;
 }
 
-module.exports = webpackConfig;
+module.exports = configs;
